@@ -1,0 +1,136 @@
+DAILY NEWS DIGEST - SETUP INSTRUCTIONS
+======================================
+
+This is your improved daily news email system. It runs for FREE on GitHub Actions.
+
+
+WHAT'S IMPROVED
+---------------
+- Uses RSS feeds exclusively (no fragile web scraping)
+- No hardcoded dates - works automatically year after year
+- Sends at 7:15 AM Ankara time
+- Better formatted emails (both HTML and plain text)
+- More reliable - RSS feeds rarely change
+
+
+COST COMPARISON
+---------------
+- Replit: $7-25/month for always-on deployments
+- GitHub Actions: FREE (2000 minutes/month, this uses ~1 min/day = 30 min/month)
+
+
+SETUP STEPS
+-----------
+
+1. CREATE A GITHUB REPOSITORY
+
+   Go to https://github.com/new and create a new private repository.
+   Name it something like "daily-news-digest".
+
+
+2. PUSH YOUR CODE TO GITHUB
+
+   Open Terminal and run these commands:
+
+   cd ~/Desktop/daily-news-digest
+   git init
+   git add .
+   git commit -m "Initial commit"
+   git branch -M main
+   git remote add origin https://github.com/YOUR_USERNAME/daily-news-digest.git
+   git push -u origin main
+
+   Replace YOUR_USERNAME with your GitHub username.
+
+
+3. ADD YOUR GMAIL CREDENTIALS AS SECRETS
+
+   In your GitHub repository:
+   - Go to Settings > Secrets and variables > Actions
+   - Click "New repository secret"
+   - Add these three secrets:
+
+   GMAIL_USER        = your-email@gmail.com
+   GMAIL_PASSWORD    = your-app-password (NOT your regular password!)
+   RECIPIENT_EMAIL   = where-to-send@gmail.com (can be same as GMAIL_USER)
+
+
+4. CREATE A GMAIL APP PASSWORD
+
+   You MUST use an App Password, not your regular Gmail password.
+
+   a) Go to https://myaccount.google.com/security
+   b) Enable 2-Step Verification if not already enabled
+   c) Go to https://myaccount.google.com/apppasswords
+   d) Select "Mail" and "Other (custom name)"
+   e) Name it "Daily News Digest"
+   f) Copy the 16-character password (no spaces)
+   g) Use this as your GMAIL_PASSWORD secret
+
+
+5. TEST IT
+
+   - Go to your repository on GitHub
+   - Click "Actions" tab
+   - Click "Daily News Digest" workflow
+   - Click "Run workflow" button
+   - Check your email!
+
+
+6. YOU'RE DONE!
+
+   The workflow will now run automatically every day at 7:15 AM Ankara time.
+
+
+ADJUSTING THE TIME
+------------------
+To change when the email arrives, edit .github/workflows/daily-news.yml
+
+The cron format is: minute hour * * *
+
+Examples:
+- 7:15 AM Ankara (UTC+3): cron: '15 4 * * *'   (4:15 AM UTC)
+- 8:00 AM Ankara:         cron: '0 5 * * *'    (5:00 AM UTC)
+- 6:30 AM Ankara:         cron: '30 3 * * *'   (3:30 AM UTC)
+
+
+ADDING/REMOVING NEWS SOURCES
+----------------------------
+Edit main.py to add or remove sources. Each source uses RSS feeds defined
+in scrapers.py.
+
+Current sources:
+- NY Times: Top Stories, World, Opinion
+- Globe and Mail: Canada, Politics, Opinion
+- La Presse: Actualités, International, Affaires
+- Axios: Top Stories
+- Substacks: everydayai, understandingai, aisnakeoil, darioamodei, sineadbovell
+- Podcasts: The Cognitive Revolution, Ezra Klein Show
+
+
+TROUBLESHOOTING
+---------------
+If emails aren't sending:
+
+1. Check the Actions tab in your GitHub repo for error logs
+2. Make sure you're using an App Password, not your regular Gmail password
+3. Verify your secrets are set correctly (Settings > Secrets)
+4. Try running the workflow manually to see errors
+
+If you want to run locally:
+   cd ~/Desktop/daily-news-digest
+   export GMAIL_USER="your-email@gmail.com"
+   export GMAIL_PASSWORD="your-app-password"
+   export RECIPIENT_EMAIL="recipient@gmail.com"
+   pip install -r requirements.txt
+   python main.py
+
+
+FILES IN THIS PROJECT
+---------------------
+main.py                           - Main script that orchestrates everything
+scrapers.py                       - RSS feed fetchers for each news source
+email_sender.py                   - Email formatting and Gmail sending
+requirements.txt                  - Python dependencies
+.github/workflows/daily-news.yml  - GitHub Actions schedule configuration
+SETUP.txt                         - This file
