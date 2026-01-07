@@ -1,10 +1,11 @@
 name: Daily News Digest
 
 on:
-  # Run at 7:15 AM Ankara time (4:15 AM UTC)
-  # Ankara is UTC+3, so 7:15 AM local = 04:15 UTC
+  # Run at 6:15 AM Ankara time (3:15 AM UTC)
+  # Ankara is UTC+3, so 6:15 AM local = 03:15 UTC
+  # (1 hour buffer for GitHub Actions scheduler delays)
   schedule:
-    - cron: '15 4 * * *'
+    - cron: '15 3 * * *'
 
   # Allow manual trigger for testing
   workflow_dispatch:
