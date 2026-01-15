@@ -27,7 +27,7 @@ class EmailSender:
                 "Set GMAIL_USER and GMAIL_PASSWORD environment variables."
             )
 
-    def format_email_body(self, all_headlines: dict) -> tuple[str, str]:
+    def format_email_body(self, all_headlines: dict, visitor_summary: str = None) -> tuple[str, str]:
         """Format headlines into plain text and HTML email bodies"""
         # Source display order
         source_order = [
@@ -47,10 +47,16 @@ class EmailSender:
         date_str = current_date.strftime("%A, %B %d, %Y")
 
         html_parts.append(f'<h1 style="color: #333; border-bottom: 2px solid #333; padding-bottom: 10px;">Daily News Digest</h1>')
-        html_parts.append(f'<p style="color: #666; margin-bottom: 30px;">{date_str}</p>')
+        html_parts.append(f'<p style="color: #666; margin-bottom: 10px;">{date_str}</p>')
 
         text_lines.append(f"DAILY NEWS DIGEST - {date_str}")
         text_lines.append("=" * 50)
+
+        # Add visitor analytics summary at the top
+        if visitor_summary:
+            text_lines.append(f"\n{visitor_summary}")
+            html_parts.append(f'<p style="color: #2e7d32; font-weight: bold; margin-bottom: 30px; padding: 10px; background-color: #e8f5e9; border-radius: 5px;">{visitor_summary}</p>')
+
         text_lines.append("")
 
         for source in source_order:
@@ -142,7 +148,7 @@ class EmailSender:
         current_date = datetime.now(ankara_tz)
         return f"Daily News Digest - {current_date.strftime('%B %d, %Y')}"
 
-    def send_daily_digest(self, all_headlines: dict) -> bool:
+    def send_daily_digest(self, all_headlines: dict, visitor_summary: str = None) -> bool:
         """Send the daily news digest email"""
         try:
             if not all_headlines:
@@ -150,7 +156,7 @@ class EmailSender:
                 return False
 
             subject = self.get_subject()
-            text_body, html_body = self.format_email_body(all_headlines)
+            text_body, html_body = self.format_email_body(all_headlines, visitor_summary)
 
             # Create message
             msg = MIMEMultipart('alternative')

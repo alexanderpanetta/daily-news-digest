@@ -10,6 +10,7 @@ from datetime import datetime
 import pytz
 from scrapers import NewsScrapers
 from email_sender import EmailSender
+from analytics import AnalyticsFetcher
 
 # Configure logging
 logging.basicConfig(
@@ -32,6 +33,20 @@ def main():
 
         scrapers = NewsScrapers()
         email_sender = EmailSender()
+        analytics = AnalyticsFetcher()
+
+        # Fetch website analytics
+        visitor_summary = None
+        logger.info("Fetching website analytics...")
+        try:
+            visitors = analytics.fetch_all_visitors()
+            if visitors:
+                visitor_summary = analytics.format_visitor_summary(visitors)
+                logger.info(f"Analytics: {visitor_summary}")
+            else:
+                logger.info("No analytics data available")
+        except Exception as e:
+            logger.warning(f"Could not fetch analytics: {e}")
 
         all_headlines = {}
 
@@ -101,7 +116,7 @@ def main():
             return 1
 
         logger.info("Sending email digest...")
-        success = email_sender.send_daily_digest(all_headlines)
+        success = email_sender.send_daily_digest(all_headlines, visitor_summary=visitor_summary)
 
         if success:
             logger.info("Daily news digest sent successfully!")
