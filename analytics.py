@@ -19,6 +19,7 @@ class AnalyticsFetcher:
         # These should be set as environment variables
         self.properties = {
             'Wandering Well': os.environ.get('GA_PROPERTY_WANDERING_WELL'),
+            'Daily AI Digest': os.environ.get('GA_PROPERTY_DAILY_AI_DIGEST'),
             'Stock Market Calculator': os.environ.get('GA_PROPERTY_STOCK_CALCULATOR'),
             'Movie Algorithm': os.environ.get('GA_PROPERTY_MOVIE_ALGORITHM'),
             'AI for You': os.environ.get('GA_PROPERTY_AI_FOR_YOU'),
@@ -111,7 +112,7 @@ class AnalyticsFetcher:
             return ""
 
         # Order: Wandering Well, Stock Market Calculator, Movie Algorithm, AI for You
-        site_order = ['Wandering Well', 'Stock Market Calculator', 'Movie Algorithm', 'AI for You']
+        site_order = ['Wandering Well', 'Daily AI Digest', 'Stock Market Calculator', 'Movie Algorithm', 'AI for You']
 
         parts = []
         for site in site_order:
